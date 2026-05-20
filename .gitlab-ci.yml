@@ -1,0 +1,178 @@
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - when: never
+
+default:
+  interruptible: true
+
+stages: [prepare, build, deploy]
+
+render-config:
+  stage: prepare
+  tags: [build, local]
+  before_script:
+    - rm -rf sgstore-config
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/thanhkeu2k4/sgstore-config.git
+    - tar -czf configs.tgz -C sgstore-config configs
+  script:
+    - |
+      for file in sgstore-config/configs/spring/*.yml; do 
+        context="$(basename "$file" .yml)" 
+        key="config/${context}/data" 
+        curl --request PUT --data-binary @"$file" "http://192.168.21.141:8500/v1/kv/$key" 
+      done
+  artifacts:
+    paths: [configs.tgz]
+
+init-rabbitmq:
+  stage: prepare
+  tags: [deploy, local]
+  needs: [render-config]
+  before_script:
+    - rm -rf ./configs
+    - tar -xzf configs.tgz -C .
+  script:
+    - |
+      curl "http://192.168.21.128:15672/api/definitions" \
+      -u admin:26102004 \
+      -H "Content-Type: application/json" \
+      -X POST \
+      -T ./configs/rabbitmq/definitions.json
+      
+
+build-maven:
+  stage: build
+  tags: [build, local]
+  script:
+    - java --version
+    - mvn --version
+    - mvn -B clean package -DskipTests
+  artifacts:
+    paths: ["**/target/*.jar"]
+
+build-image:
+  stage: build
+  tags: [build, local]
+  needs: [build-maven]
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker compose -f docker-compose.sgstore01.yml build user-service
+    - docker compose -f docker-compose.sgstore01.yml push user-service
+    - docker compose -f docker-compose.sgstore01.yml build product-service
+    - docker compose -f docker-compose.sgstore01.yml push product-service
+    - docker compose -f docker-compose.sgstore01.yml build catalog-service
+    - docker compose -f docker-compose.sgstore01.yml push catalog-service
+    - docker compose -f docker-compose.sgstore01.yml build cart-service
+    - docker compose -f docker-compose.sgstore01.yml push cart-service
+    - docker compose -f docker-compose.sgstore01.yml build order-service
+    - docker compose -f docker-compose.sgstore01.yml push order-service
+    - docker compose -f docker-compose.sgstore01.yml build payment-service
+    - docker compose -f docker-compose.sgstore01.yml push payment-service
+    - docker compose -f docker-compose.sgstore02.yml build
+    - docker compose -f docker-compose.sgstore02.yml push
+
+
+deploy-sgstore03:
+  stage: deploy
+  tags: [deploy, local]
+  needs: [render-config, build-image]
+  before_script:
+    - rm -rf ./configs
+    - tar -xzf configs.tgz -C .
+    - ssh -i /home/ubuntu/private-key ubuntu@192.168.21.128 "rm -rf ./apisix/conf/config.yaml"
+  script:
+    - scp -i /home/ubuntu/private-key ./configs/apisix-gateway/config.yaml ubuntu@192.168.21.128:~/apisix/conf/
+    - scp -i /home/ubuntu/private-key ./docker-compose.sgstore03.yml ubuntu@192.168.21.128:~/apisix
+    - ssh -i /home/ubuntu/private-key ubuntu@192.168.21.128 "
+      cd ~/apisix &&
+      docker compose -f docker-compose.sgstore03.yml up -d 
+      "
+
+deploy-sgstore02:
+  stage: deploy
+  tags: [deploy, local]
+  needs: [render-config, build-image]
+  script:
+    - scp -i /home/ubuntu/private-key ./docker-compose.sgstore02.yml ubuntu@192.168.21.141:~/keycloak
+    - ssh -i /home/ubuntu/private-key ubuntu@192.168.21.141 "
+      export CI_REGISTRY_IMAGE='$CI_REGISTRY_IMAGE' &&
+      cd ~/keycloak &&
+      echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY" &&
+      (docker compose -f docker-compose.sgstore02.yml down || true) &&
+      docker compose -f docker-compose.sgstore02.yml up -d --no-build
+      "
+
+init-elasticsearch:
+  stage: deploy
+  tags: [deploy, local]
+  needs: [render-config, deploy-sgstore02]
+  before_script:
+    - rm -rf ./configs
+    - tar -xzf configs.tgz -C .
+  script:
+    - |
+      for file in ./configs/elasticsearch/*.json; do
+        index=$(basename "$file" .json)
+      
+        curl -u elastic:26102004 \
+            -H "Content-Type: application/json" \
+            -X PUT "http://192.168.21.141:9200/${index}" \
+            --data-binary @"$file"
+      done
+
+deploy-sgstore01:
+  stage: deploy
+  tags: [deploy, local]
+  needs: [build-image, render-config, deploy-sgstore02, deploy-sgstore03, init-elasticsearch]
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker compose -f docker-compose.sgstore01.yml down || true
+    - docker compose -f docker-compose.sgstore01.yml up -d --no-build
+
+deploy-gateway-config:
+  stage: deploy
+  tags: [deploy, local]
+  needs: [render-config, deploy-sgstore01]
+  before_script:
+    - rm -rf ./configs
+    - tar -xzf configs.tgz -C .
+    - scp -i /home/ubuntu/private-key ./configs/apisix-gateway/routes/*/*.json ubuntu@192.168.21.128:~/apisix/routes/
+    - scp -i /home/ubuntu/private-key ./configs/apisix-gateway/plugin-configs/*.json ubuntu@192.168.21.128:~/apisix/plugins/
+  script:
+    - |
+      ssh -i /home/ubuntu/private-key ubuntu@192.168.21.128 << 'EOF'
+
+      docker exec apisix-etcd-1 etcdctl del /apisix --prefix     
+      
+      for file in /home/ubuntu/apisix/plugins/*.json; do
+        name=$(basename "$file" .json)
+        curl "http://127.0.0.1:9180/apisix/admin/plugin_configs/$name" \
+          -X PUT \
+          -H "X-API-KEY: sgstore-apisix-admin-key" \
+          -H "Content-Type: application/json" \
+          -d @"$file"
+      done
+      EOF
+    - |
+      ssh -i /home/ubuntu/private-key ubuntu@192.168.21.128 << 'EOF'
+      for file in /home/ubuntu/apisix/routes/*.json; do
+        name=$(basename "$file" .json)
+        curl "http://127.0.0.1:9180/apisix/admin/routes/$name" \
+          -X PUT \
+          -H "X-API-KEY: sgstore-apisix-admin-key" \
+          -H "Content-Type: application/json" \
+          -d @"$file"
+      done
+      EOF
+
+
+
+      
+      
+
+#docker exec apisix-etcd-1 etcdctl del /apisix --prefix
+# hai cái này dùng trong môi trường dev thôi
+#xóa nội dung thư mục /apisix/routes và /apisix/plugins

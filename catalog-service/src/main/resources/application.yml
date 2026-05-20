@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: catalog-service
+
+  config:
+    import: "optional:consul:"
+
+  cloud:
+    consul:
+      host: consul-client
+      port: 8500
+      config:
+        enabled: true
+        format: yaml
+        prefix: config
+        default-context: application
+        profile-separator: '-'
+        request-connect-timeout: 5000
+        request-read-timeout: 5000
+        fail-fast: true
+        retry:
+          #        4
+          max-attempts: 10
+          #        5
+          initial-interval: 5000
+          #        6
+          max-interval: 10000
+          #        7
+          multiplier: 1.1
+
+      discovery:
+        enabled: true
+        register: true
+        fail-fast: false
+        register-health-check: false
+        prefer-ip-address: true
+        ip-address: 192.168.21.147
+        port: 8083
+        retry:
+          #        4
+          max-attempts: 10
+          #        5
+          initial-interval: 5000
+          #        6
+          max-interval: 10000
+          #        7
+          multiplier: 1.1
+
+app:
+  image:
+    upload-dir: ${APP_IMAGE_UPLOAD_DIR:/home/ubuntu/sgstore/images}

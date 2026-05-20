@@ -1,0 +1,54 @@
+services:
+
+  consul-client:
+    image: hashicorp/consul:1.22.3
+    command: [ "agent", "-config-dir=/consul/config-ro" ]
+    ports:
+      - "8300:8300"
+      - "8301:8301"
+      - "8301:8301/udp"
+      - "8302:8302"
+      - "8302:8302/udp"
+    networks:
+      - sgstore-network-03
+    volumes:
+      - /etc/consul.d:/consul/config-ro:ro
+
+  etcd:
+    image: bitnamilegacy/etcd:3.6.4-debian-12-r4
+    restart: unless-stopped
+    depends_on:
+      - consul-client
+    environment:
+      ETCD_DATA_DIR: /etcd_data
+      ALLOW_NONE_AUTHENTICATION: "yes"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://etcd:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+#    ports:
+#      - "2379:2379/tcp"
+    volumes:
+      - ./apisix/data/etcd:/etcd_data
+    networks:
+      - sgstore-network-03
+
+  apisix:
+    image: apache/apisix:3.15.0-debian
+    restart: unless-stopped
+    depends_on:
+      - etcd
+    ports:
+      - "9180:9180/tcp"
+      - "9080:9080/tcp"
+      - "9091:9091/tcp"
+      - "9443:9443/tcp"
+    volumes:
+      - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+    networks:
+      - sgstore-network-03
+
+networks:
+  sgstore-network-03:
+    driver: bridge
+
+
+#restart

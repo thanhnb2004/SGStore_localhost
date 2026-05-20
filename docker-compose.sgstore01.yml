@@ -1,0 +1,117 @@
+services:
+  consul-client:
+    image: hashicorp/consul:1.22.3
+    command: [ "agent", "-config-dir=/consul/config-ro" ]
+    ports:
+      - "8300:8300"
+      - "8301:8301"
+      - "8301:8301/udp"
+      - "8302:8302"
+      - "8302:8302/udp"
+    networks:
+      - sgstore-network-01
+    volumes:
+      - /etc/consul.d:/consul/config-ro:ro
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/user-service:latest
+    ports:
+      - "8082:8082"
+    networks:
+      - sgstore-network-01
+    environment:
+      SPRING_PROFILES_ACTIVE: dev,keycloak,postgres,rabbit
+#    volumes:
+#      - ./configs/user-service:/configs:ro
+    depends_on:
+      - consul-client
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/product-service:latest
+    ports:
+      - "8081:8081"
+    networks:
+      - sgstore-network-01
+    environment:
+      SPRING_PROFILES_ACTIVE: dev,postgres,rabbit
+      APP_IMAGE_UPLOAD_DIR: /home/ubuntu/sgstore/images
+    volumes:
+      - /home/ubuntu/sgstore/images:/home/ubuntu/sgstore/images
+#      - ./configs/product-service:/configs:ro
+    depends_on:
+      - consul-client
+
+  catalog-service:
+    build:
+      context: ./catalog-service
+      dockerfile: Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/catalog-service:latest
+    ports:
+      - "8083:8083"
+    networks:
+      - sgstore-network-01
+    environment:
+      SPRING_PROFILES_ACTIVE: dev,postgres,rabbit,elastic
+      APP_IMAGE_UPLOAD_DIR: /home/ubuntu/sgstore/images
+    volumes:
+      - /home/ubuntu/sgstore/images:/home/ubuntu/sgstore/images:ro
+#      - ./configs/catalog-service:/configs:ro
+    depends_on:
+      - consul-client
+
+  cart-service:
+    build:
+      context: ./cart-service
+      dockerfile: Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/cart-service:latest
+    ports:
+      - "8084:8084"
+    networks:
+      - sgstore-network-01
+    environment:
+      SPRING_PROFILES_ACTIVE: dev,postgres,rabbit
+      #    volumes:
+      #      - ./configs/catalog-service:/configs:ro
+    depends_on:
+      - consul-client
+
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/payment-service:latest
+    ports:
+      - "8085:8085"
+    networks:
+      - sgstore-network-01
+    environment:
+      SPRING_PROFILES_ACTIVE: dev,postgres,rabbit
+    depends_on:
+      - consul-client
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    image: ${CI_REGISTRY_IMAGE}/order-service:latest
+    ports:
+      - "8086:8086"
+    networks:
+      - sgstore-network-01
+    environment:
+      SPRING_PROFILES_ACTIVE: dev,postgres,rabbit
+    depends_on:
+      - consul-client
+
+
+networks:
+  sgstore-network-01:
+    driver: bridge
+
+

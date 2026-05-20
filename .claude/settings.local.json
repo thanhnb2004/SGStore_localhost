@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn -pl product-service compile -DskipTests)",
+      "Bash(./mvnw -pl product-service compile -DskipTests)",
+      "Bash(grep -E \"\\\\.java$\")",
+      "Bash(npm install:*)",
+      "Read(//usr/local/**)",
+      "Read(//usr/**)",
+      "Bash(command -v node)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/thanh/AppData/Roaming/**)",
+      "Read(//c//**)",
+      "Read(//c/Users/thanh/AppData/Local/**)",
+      "Read(//c/Users/thanh/scoop/apps/**)",
+      "Bash(reg query:*)",
+      "WebFetch(domain:gearvn.com)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -n \"class BaseEntity\\\\|@MappedSuperclass\" /e/Java/sgstore/product-service/src/main/java/com/ptit/clone/entity/*.java)",
+      "Bash(mvn clean:*)",
+      "Bash(find /e/Java/sgstore -type f -name \"*.java\" -exec grep -l \"RestTemplate\\\\|Kafka\\\\|kafka\" {} \\\\;)",
+      "Bash(find /e/Java/sgstore -type f -name \"pom.xml\" -exec grep -l \"elasticsearch\\\\|kafka\\\\|rabbitmq\" {} \\\\;)",
+      "Bash(find /e/Java/sgstore/product-service -type f -name \"pom.xml\" -exec grep -A5 -B5 \"rabbitmq\\\\|amqp\" {} \\\\;)",
+      "Bash(xargs wc:*)",
+      "Bash(find /E/Java/sgstore/payment-service -type f -name \"*.java\" -exec grep -l \"Exception\\\\|Error\" {} \\\\;)",
+      "Bash(xargs ls:*)",
+      "Bash(xargs cat:*)",
+      "Bash(find /e/Java/sgstore -name \"Dockerfile\" -exec cat {} \\\\; -print)",
+      "Bash(python -c \"from reportlab.lib.pagesizes import A4; print\\('reportlab ok'\\)\")",
+      "Bash(pip install:*)",
+      "Bash(grep -E \"\\\\.\\(html|js|css|json\\)$\")",
+      "Bash(wc -l \"E:\\\\Downloads\\\\sgstore-frontend\\\\PhuKien247\"/*.html \"E:\\\\Downloads\\\\sgstore-frontend\\\\PhuKien247\\\\admin\"/*.html \"E:\\\\Downloads\\\\sgstore-frontend\\\\PhuKien247\\\\css\"/*.css)",
+      "Bash(find \"E:\\\\Downloads\\\\sgsstore-FE\" -name \"*.js\" -exec wc -l {} +)",
+      "Bash(find \"E:\\\\Downloads\\\\sgsstore-FE\" -name \"*.html\" -exec grep -l \"input.*minlength\\\\|input.*pattern\\\\|input.*required\" {} \\\\;)",
+      "Bash(xargs head *)"
+    ]
+  }
+}
