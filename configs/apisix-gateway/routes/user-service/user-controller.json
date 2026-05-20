@@ -1,0 +1,16 @@
+{
+  "id": "user-controller",
+  "uri": "/users/*",
+  "methods": ["GET","POST","PUT","OPTIONS"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/users/?(.*)", "/api/v1/members/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "user-service",
+    "discovery_type": "consul"
+  }
+}

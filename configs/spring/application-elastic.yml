@@ -1,0 +1,5 @@
+spring:
+  elasticsearch: 
+    uris: ${ELASTIC_URL}
+    username: ${ELASTIC_USERNAME}
+    password: ${ELASTIC_PASSWORD}

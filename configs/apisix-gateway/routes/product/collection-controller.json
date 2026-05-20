@@ -1,0 +1,16 @@
+{
+  "id": "collection-controller",
+  "uri": "/collections/*",
+  "methods": ["POST","GET","PATCH","OPTIONS","DELETE"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/collections/?(.*)", "/internal/v1/collections/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "product-service",
+    "discovery_type": "consul"
+  }
+}

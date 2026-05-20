@@ -1,0 +1,16 @@
+{
+  "id": "payment-controller",
+  "uri": "/payments/*",
+  "methods": ["POST","GET","PATCH","OPTIONS"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/payments/?(.*)", "/api/v1/payments/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "payment-service",
+    "discovery_type": "consul"
+  }
+}

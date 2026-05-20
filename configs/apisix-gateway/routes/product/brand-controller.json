@@ -1,0 +1,16 @@
+{
+  "id": "brand-controller",
+  "uri": "/brands/*",
+  "methods": ["POST","GET","PATCH","OPTIONS","DELETE"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/brands/?(.*)", "/internal/v1/brands/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "product-service",
+    "discovery_type": "consul"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "type-controller",
+  "uri": "/product-types/*",
+  "methods": ["POST","GET","PATCH","OPTIONS","DELETE"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/product-types/?(.*)", "/internal/v1/product-types/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "product-service",
+    "discovery_type": "consul"
+  }
+}

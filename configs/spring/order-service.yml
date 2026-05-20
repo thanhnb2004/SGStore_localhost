@@ -1,0 +1,13 @@
+queue:
+  cart-query:
+    queue-name: ${CART_QUERY_QUEUE_NAME}
+    exchange: ${CART_QUERY_EXCHANGE}
+    routing-key: ${CART_QUERY_ROUTING_KEY}
+  cart-clear:
+    queue-name: ${CART_CLEAR_QUEUE_NAME}
+    exchange: ${CART_CLEAR_EXCHANGE}
+    routing-key: ${CART_CLEAR_ROUTING_KEY}
+  payment-completed:
+    queue-name: ${PAYMENT_COMPLETED_QUEUE_NAME}
+    exchange: ${PAYMENT_COMPLETED_EXCHANGE}
+    routing-key: ${PAYMENT_COMPLETED_ROUTING_KEY}

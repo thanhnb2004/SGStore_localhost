@@ -1,0 +1,16 @@
+{
+  "id": "user-delete",
+  "uri": "/users/*",
+  "methods": ["DELETE","OPTIONS"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/users/?(.*)", "/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "user-service",
+    "discovery_type": "consul"
+  }
+}

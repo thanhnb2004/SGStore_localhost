@@ -1,0 +1,16 @@
+{
+  "id": "attribute-controller",
+  "uri": "/attributes/*",
+  "methods": ["POST","GET","PATCH","OPTIONS","DELETE"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/attributes/?(.*)", "/internal/v1/attributes/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "product-service",
+    "discovery_type": "consul"
+  }
+}

@@ -1,0 +1,37 @@
+SERVER_PORT: 8081
+# Database
+DB_URL: jdbc:postgresql://192.168.21.141:5432/sgstore
+DB_USERNAME: postgres
+DB_PASSWORD: 26102004
+DB_DDL: update
+
+#RabbitMQ
+RABBITMQ_HOST: 192.168.21.128
+RABBITMQ_PORT: 5672
+RABBITMQ_USERNAME: admin
+RABBITMQ_PASSWORD: 26102004
+RABBITMQ_VHOST: sgstore
+
+PRODUCT_ARCHIVED_QUEUE_NAME: product.archived.q
+PRODUCT_ARCHIVED_EXCHANGE: product.events
+PRODUCT_ARCHIVED_ROUTING_KEY: product.archived
+
+PRODUCT_DELETED_QUEUE_NAME: product.deleted.q
+PRODUCT_DELETED_EXCHANGE: product.events
+PRODUCT_DELETED_ROUTING_KEY: product.deleted
+
+VARIANT_PAUSED_QUEUE_NAME: product.variant.paused.q
+VARIANT_PAUSED_EXCHANGE: product.events
+VARIANT_PAUSED_ROUTING_KEY: product.variant.paused
+
+VARIANT_DELETED_QUEUE_NAME: product.variant.deleted.q
+VARIANT_DELETED_EXCHANGE: product.events
+VARIANT_DELETED_ROUTING_KEY: product.variant.deleted
+
+ELASTIC_UPSERT_QUEUE_NAME: elastic.upsert.q
+ELASTIC_UPSERT_EXCHANGE: elastic.events
+ELASTIC_UPSERT_ROUTING_KEY: elastic.upsert
+
+PRODUCT_VARIANT_QUERY_QUEUE_NAME: product.variant.query.q
+PRODUCT_VARIANT_QUERY_EXCHANGE: product.events
+PRODUCT_VARIANT_QUERY_ROUTING_KEY: product.variant.query

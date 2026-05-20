@@ -1,0 +1,14 @@
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:192.168.21.128}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VHOST:sgstore}
+
+queue:
+  mark-verified:
+    queue-name: ${MARK_VERIFIED_QUEUE_NAME}
+    exchange: ${MARK_VERIFIED_EXCHANGE}
+    routing-key: ${MARK_VERIFIED_ROUTING_KEY}
+
