@@ -1,0 +1,32 @@
+apisix:
+  node_listen:
+    - port: 9080
+  enable_admin: true
+
+deployment:
+  role: traditional
+  role_traditional:
+    config_provider: etcd
+  admin:
+    admin_listen:
+      port: 9180
+    admin_key_required: true
+    allow_admin:
+      - 127.0.0.1/8
+      - 192.168.21.0/24
+      - 172.18.0.0/16
+    admin_key:
+      -
+        name: admin
+        key: sgstore-apisix-admin-key
+        role: admin
+  etcd:
+    host:                         
+      - "http://etcd:2379"
+
+discovery:
+  consul:
+    servers:
+      - "http://consul-client:8500"
+  
+  

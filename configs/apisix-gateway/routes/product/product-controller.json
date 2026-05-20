@@ -1,0 +1,16 @@
+{
+  "id": "product-controller",
+  "uri": "/products/*",
+  "methods": ["POST","GET","PATCH","OPTIONS","DELETE"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/products/?(.*)", "/internal/v1/products/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "product-service",
+    "discovery_type": "consul"
+  }
+}

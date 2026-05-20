@@ -1,0 +1,16 @@
+{
+  "id": "order-controller",
+  "uri": "/orders/*",
+  "methods": ["POST","GET","PATCH","OPTIONS"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/orders/?(.*)", "/api/v1/orders/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "order-service",
+    "discovery_type": "consul"
+  }
+}

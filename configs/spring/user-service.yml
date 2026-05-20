@@ -1,0 +1,5 @@
+queue:
+  mark-verified:
+    queue-name: ${MARK_VERIFIED_QUEUE_NAME}
+    exchange: ${MARK_VERIFIED_EXCHANGE}
+    routing-key: ${MARK_VERIFIED_ROUTING_KEY

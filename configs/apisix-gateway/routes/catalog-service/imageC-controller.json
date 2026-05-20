@@ -1,0 +1,16 @@
+{
+  "id": "imageC-controller",
+  "uri": "/images-catalog/*",
+  "methods": ["POST","GET","PATCH","OPTIONS","DELETE"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/images-catalog/?(.*)", "/internal/v1/images/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "catalog-service",
+    "discovery_type": "consul"
+  }
+}

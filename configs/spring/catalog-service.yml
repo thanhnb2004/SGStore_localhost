@@ -1,0 +1,22 @@
+queue:
+  elastic-upsert:
+    queue-name: ${ELASTIC_UPSERT_QUEUE_NAME}
+    exchange: ${ELASTIC_UPSERT_EXCHANGE}
+    routing-key: ${ELASTIC_UPSERT_ROUTING_KEY}
+  product-archived:
+    queue-name: ${PRODUCT_ARCHIVED_QUEUE_NAME}
+    exchange: ${PRODUCT_ARCHIVED_EXCHANGE}
+    routing-key: ${PRODUCT_ARCHIVED_ROUTING_KEY}
+  product-deleted:
+    queue-name: ${PRODUCT_DELETED_QUEUE_NAME}
+    exchange: ${PRODUCT_DELETED_EXCHANGE}
+    routing-key: ${PRODUCT_DELETED_ROUTING_KEY}
+  variant-paused:
+    queue-name: ${VARIANT_PAUSED_QUEUE_NAME}
+    exchange: ${VARIANT_PAUSED_EXCHANGE}
+    routing-key: ${VARIANT_PAUSED_ROUTING_KEY}
+  variant-deleted:
+    queue-name: ${VARIANT_DELETED_QUEUE_NAME}
+    exchange: ${VARIANT_DELETED_EXCHANGE}
+    routing-key: ${VARIANT_DELETED_ROUTING_KEY}
+  

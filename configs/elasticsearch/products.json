@@ -1,0 +1,176 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "product_text_index": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        },
+        "product_text_search": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        }
+      },
+      "normalizer": {
+        "keyword_lowercase": {
+          "type": "custom",
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+
+      "variant_id": {
+        "type": "keyword",
+        "normalizer": "keyword_lowercase"
+      },
+      "product_id": {
+        "type": "keyword",
+        "normalizer": "keyword_lowercase"
+      },
+      "productSlug": {
+        "type": "keyword",
+        "normalizer": "keyword_lowercase"
+      },
+
+      "product_name": {
+        "type": "text",
+        "analyzer": "product_text_index",
+        "search_analyzer": "product_text_search"
+      },
+      "short_description": {
+        "type": "text",
+        "analyzer": "product_text_index",
+        "search_analyzer": "product_text_search"
+      },
+
+      "hero_image": {
+        "type": "keyword",
+        "index": false
+      },
+
+      "published_at": {
+        "type": "date",
+        "format": "date_hour_minute_second_fraction"
+      },
+
+      "brand": {
+        "properties": {
+          "brand_slug": {
+            "type": "keyword",
+            "normalizer": "keyword_lowercase"
+          },
+          "brand_name": {
+            "type": "text",
+            "analyzer": "product_text_index",
+            "search_analyzer": "product_text_search"
+          },
+          "brand_logo": {
+            "type": "keyword",
+            "index": false
+          }
+        }
+      },
+
+      "product_type": {
+        "properties": {
+          "product_type_slug": {
+            "type": "keyword",
+            "normalizer": "keyword_lowercase"
+          },
+          "product_type_name": {
+            "type": "text",
+            "analyzer": "product_text_index",
+            "search_analyzer": "product_text_search"
+          }
+        }
+      },
+
+      "collections": {
+        "type": "object",
+        "properties": {
+          "collection_slug": {
+            "type": "keyword",
+            "normalizer": "keyword_lowercase"
+          },
+          "collection_name": {
+            "type": "text",
+            "analyzer": "product_text_index",
+            "search_analyzer": "product_text_search"
+          },
+          "hero_banner": {
+            "type": "keyword",
+            "index": false
+          }
+        }
+      },
+
+      "attributes": {
+        "type": "nested",
+        "properties": {
+          "code": {
+            "type": "keyword",
+            "normalizer": "keyword_lowercase"
+          },
+          "name": {
+            "type": "text",
+            "analyzer": "product_text_index",
+            "search_analyzer": "product_text_search"
+          },
+          "value": {
+            "type": "text",
+            "analyzer": "product_text_index",
+            "search_analyzer": "product_text_search"
+          }
+        }
+      },
+
+      "variant": {
+        "properties": {
+          "sku": {
+            "type": "keyword",
+            "normalizer": "keyword_lowercase"
+          },
+          "variant_name": {
+            "type": "text",
+            "analyzer": "product_text_index",
+            "search_analyzer": "product_text_search"
+          },
+          "list_price": {
+            "type": "long"
+          },
+          "sale_price": {
+            "type": "long"
+          },
+          "availability_status": {
+            "type": "keyword"
+          },
+          "variant_hero_image": {
+            "type": "keyword",
+            "index": false
+          },
+          "option_values": {
+            "type": "object",
+            "dynamic": true
+          }
+        }
+      },
+
+      "product_stats": {
+        "properties": {
+          "rating_average": {
+            "type": "double"
+          },
+          "rating_count": {
+            "type": "integer"
+          },
+          "sold_count": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "cart-controller",
+  "uri": "/carts/*",
+  "methods": ["POST","GET","PATCH","OPTIONS"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/carts/?(.*)", "/api/v1/carts/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "cart-service",
+    "discovery_type": "consul"
+  }
+}

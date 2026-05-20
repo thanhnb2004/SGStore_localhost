@@ -1,0 +1,5 @@
+queue:
+  payment-completed:
+    queue-name: ${PAYMENT_COMPLETED_QUEUE_NAME}
+    exchange: ${PAYMENT_COMPLETED_EXCHANGE}
+    routing-key: ${PAYMENT_COMPLETED_ROUTING_KEY}

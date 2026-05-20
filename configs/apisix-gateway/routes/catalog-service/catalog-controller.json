@@ -1,0 +1,16 @@
+{
+  "id": "catalog-controller",
+  "uri": "/catalogs/*",
+  "methods": ["POST","GET","PATCH","OPTIONS"],
+  "plugins": {
+    "proxy-rewrite": {
+      "regex_uri": ["^/catalogs/?(.*)", "/api/v1/catalogs/$1"]
+    }
+  },
+  "plugin_config_id": "cors",
+  "upstream": {
+    "type": "roundrobin",
+    "service_name": "catalog-service",
+    "discovery_type": "consul"
+  }
+}

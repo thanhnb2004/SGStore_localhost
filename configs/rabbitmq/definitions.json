@@ -1,0 +1,203 @@
+{
+  "exchanges": [
+    {
+      "name": "user.events",
+      "vhost": "sgstore",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "elastic.events",
+      "vhost": "sgstore",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "product.events",
+      "vhost": "sgstore",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "cart.events",
+      "vhost": "sgstore",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "payment.events",
+      "vhost": "sgstore",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "user.email.verified.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "elastic.upsert.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "product.variant.query.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "cart.query.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "cart.clear.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "payment.completed.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "product.archived.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "product.deleted.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "product.variant.paused.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "product.variant.deleted.q",
+      "vhost": "sgstore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "user.events",
+      "vhost": "sgstore",
+      "destination": "user.email.verified.q",
+      "destination_type": "queue",
+      "routing_key": "user.email.verified",
+      "arguments": {}
+    },
+    {
+      "source": "elastic.events",
+      "vhost": "sgstore",
+      "destination": "elastic.upsert.q",
+      "destination_type": "queue",
+      "routing_key": "elastic.upsert",
+      "arguments": {}
+    },
+    {
+      "source": "product.events",
+      "vhost": "sgstore",
+      "destination": "product.variant.query.q",
+      "destination_type": "queue",
+      "routing_key": "product.variant.query",
+      "arguments": {}
+    },
+    {
+      "source": "cart.events",
+      "vhost": "sgstore",
+      "destination": "cart.query.q",
+      "destination_type": "queue",
+      "routing_key": "cart.query",
+      "arguments": {}
+    },
+    {
+      "source": "cart.events",
+      "vhost": "sgstore",
+      "destination": "cart.clear.q",
+      "destination_type": "queue",
+      "routing_key": "cart.clear",
+      "arguments": {}
+    },
+    {
+      "source": "payment.events",
+      "vhost": "sgstore",
+      "destination": "payment.completed.q",
+      "destination_type": "queue",
+      "routing_key": "payment.completed",
+      "arguments": {}
+    },
+    {
+      "source": "product.events",
+      "vhost": "sgstore",
+      "destination": "product.archived.q",
+      "destination_type": "queue",
+      "routing_key": "product.archived",
+      "arguments": {}
+    },
+    {
+      "source": "product.events",
+      "vhost": "sgstore",
+      "destination": "product.deleted.q",
+      "destination_type": "queue",
+      "routing_key": "product.deleted",
+      "arguments": {}
+    },
+    {
+      "source": "product.events",
+      "vhost": "sgstore",
+      "destination": "product.variant.paused.q",
+      "destination_type": "queue",
+      "routing_key": "product.variant.paused",
+      "arguments": {}
+    },
+    {
+      "source": "product.events",
+      "vhost": "sgstore",
+      "destination": "product.variant.deleted.q",
+      "destination_type": "queue",
+      "routing_key": "product.variant.deleted",
+      "arguments": {}
+    }
+  ]
+}
