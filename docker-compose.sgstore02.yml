@@ -1,8 +1,8 @@
 services:
   keycloak:
     build:
-      context: ./keycloak-email-verify-listener
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: keycloak-email-verify-listener/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/keycloak-email-verify-listener:latest
     ports:
       - "8080:8080"

@@ -13,10 +13,15 @@ services:
     volumes:
       - /etc/consul.d:/consul/config-ro:ro
 
+  common:
+    build:
+      context: .
+      dockerfile: common/Dockerfile
+
   user-service:
     build:
-      context: ./user-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: user-service/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/user-service:latest
     ports:
       - "8082:8082"
@@ -31,8 +36,8 @@ services:
 
   product-service:
     build:
-      context: ./product-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: product-service/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/product-service:latest
     ports:
       - "8081:8081"
@@ -49,8 +54,8 @@ services:
 
   catalog-service:
     build:
-      context: ./catalog-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: catalog-service/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/catalog-service:latest
     ports:
       - "8083:8083"
@@ -67,8 +72,8 @@ services:
 
   cart-service:
     build:
-      context: ./cart-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: cart-service/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/cart-service:latest
     ports:
       - "8084:8084"
@@ -83,8 +88,8 @@ services:
 
   payment-service:
     build:
-      context: ./payment-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: payment-service/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/payment-service:latest
     ports:
       - "8085:8085"
@@ -97,8 +102,8 @@ services:
 
   order-service:
     build:
-      context: ./order-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: order-service/Dockerfile
     image: ${CI_REGISTRY_IMAGE}/order-service:latest
     ports:
       - "8086:8086"
